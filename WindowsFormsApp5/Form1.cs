@@ -26,17 +26,30 @@ namespace WindowsFormsApp5
         int Eye3X = 440;
         int Eye3Y = 420;
    
-        int EarX = 0;
-        int EarY = 0;
+        int Ear1X = 380;
+        int Ear1Y = 390;
+        int Ear2X = 250;
+        int Ear2Y = 450;
+        int Ear3X = 380;
+        int Ear3Y = 540;
 
         int Leg1X= 130;
         int Leg1Y= 600;
         int Leg2X= 320;
         int Leg2Y= 600;
+
+        int rad = 150;
+        int HobotX = 370;
+        int HobotY = 450;
+
+        bool isMovingLeft = false;
+        bool isEarUp = false;
+        bool isHobotUp = false;
         public Form1()
         {
             InitializeComponent();
-
+            timer1.Interval = 250; 
+            timer1.Start();
         }
         void DrBody()
         {
@@ -62,13 +75,28 @@ namespace WindowsFormsApp5
         }
         void DrEar()
         {
-            Point[] points =
+            if (isEarUp)
             {
-                new Point(340,380),
-                new Point(250,450),
-                new Point(350,580)
-            };
-            g.FillPolygon(new SolidBrush(Color.Purple),points);
+                Point[] points =
+                {
+                    new Point(Ear1X,Ear1Y),
+                    new Point(Ear2X,Ear2Y),
+                    new Point(Ear3X,Ear3Y)
+                };
+                g.FillPolygon(new SolidBrush(Color.Plum), points);
+                g.DrawPolygon(new Pen(Color.Purple), points);
+            }
+            else
+            {
+                Point[] points =
+                {
+                    new Point(Ear1X,Ear1Y),
+                    new Point(Ear2X,Ear2Y-50),
+                    new Point(Ear3X-50,Ear3Y)
+                };
+                g.FillPolygon(new SolidBrush(Color.Plum), points);
+                g.DrawPolygon(new Pen(Color.Purple), points);
+            }
         }
         void DrLegs()
         {
@@ -78,8 +106,22 @@ namespace WindowsFormsApp5
             g.FillRectangle(new SolidBrush(Color.PowderBlue), Leg2X, Leg2Y, 50, 100);
             g.DrawRectangle(new Pen(Color.RoyalBlue), Leg2X, Leg2Y, 50, 100);
         }
+
+        void DrHobot()
+        {
+            if (isHobotUp)
+            {
+                g.DrawArc(new Pen(Color.LightSteelBlue, 40), HobotX, HobotY , rad, rad, 0, -180);
+            }
+            else
+            {
+                g.DrawArc(new Pen(Color.LightSteelBlue, 40), HobotX, HobotY, rad, rad, 0+20, -150);
+            }
+
+        }
         void DrElephant()
         {
+            DrHobot();
             DrLegs();
             DrBody();
             DrHead();
@@ -95,6 +137,48 @@ namespace WindowsFormsApp5
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (isMovingLeft)
+            {
+                BodyX -= 10;
+                HeadX -= 10;
+                Eye1X -= 10;
+                Eye2X -= 10;
+                Eye3X -= 10;
+                Ear1X -= 10;
+                Ear2X -= 10;
+                Ear3X -= 10;
+                Leg1X -= 10;
+                Leg2X -= 10;
+                HobotX -= 10;
+            }
+            else
+            {
+                BodyX += 10;
+                HeadX += 10;
+                Eye1X += 10;
+                Eye2X += 10;
+                Eye3X += 10;
+                Ear1X += 10;
+                Ear2X += 10;
+                Ear3X += 10;
+                Leg1X += 10;
+                Leg2X += 10;
+                HobotX += 10;
+            }
+
+            if (BodyX <= 0 || BodyX + 300 >= Width)
+            {
+                isMovingLeft = !isMovingLeft;
+            }
+
+            isEarUp = !isEarUp;
+            isHobotUp = !isHobotUp;
+
+            Invalidate();
         }
     }
 }
